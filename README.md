@@ -7,49 +7,54 @@ El patrón clásico MVC/Arquitectura por Tipo de Archivo (controllers, models, r
 
 En proyectos reales y medianos/grandes terminan volviéndose difíciles de mantener.  Para aplicar buenas prácticas de un desarrollador Senior/Fullstack, la mejor alternativa es migrar a una Arquitectura por Módulos / Dominio (Feature-based architecture).
 
+##  Estructura del Proyecto
+
+```text
 my-app/
-├── client/ (o frontend/)
+├── client/                     # App de Frontend (React / Vite / Next.js)
 │   ├── src/
-│   │   ├── assets/               # Imágenes, fuentes, estilos globales
-│   │   ├── components/           # Componentes UI globales (Button, Input, Navbar)
-│   │   ├── config/               # Variables globales, axios instance, etc.
-│   │   ├── hooks/                # Custom hooks reutilizables globalmente
-│   │   ├── modules/ (o features/)# 👈 NÚCLEO DEL FRONTEND
-│   │   │   ├── auth/
-│   │   │   │   ├── components/   # LoginForm, RegisterForm
-│   │   │   │   ├── hooks/        # useAuth
-│   │   │   │   ├── services/     # authApi.ts
-│   │   │   │   └── pages/        # LoginPage.tsx
-│   │   │   ├── products/
-│   │   │   │   ├── components/   # ProductCard, ProductList
-│   │   │   │   ├── services/     # productApi.ts
-│   │   │   │   └── pages/        # ProductsPage.tsx
-│   │   ├── routes/               # Configuración central de rutas (React Router)
-│   │   ├── types/                # Definiciones globales de TypeScript
-│   │   ├── utils/                # Funciones puras (formatters, validators)
-│   │   ├── App.tsx
-│   │   └── main.tsx
+│   │   ├── assets/             # Recursos estáticos (imágenes, fuentes, estilos globales)
+│   │   ├── components/         # Componentes UI globales/reutilizables (Button, Input, Modal)
+│   │   ├── config/             # Configuración de cliente (instancia Axios, constantes)
+│   │   ├── hooks/              # Custom Hooks globales (useTheme, useWindowSize)
+│   │   ├── modules/            #  NÚCLEO DE DOMINIO / FEATURES (Feature-Based)
+│   │   │   ├── auth/           # Módulo de Autenticación
+│   │   │   │   ├── components/ # Componentes exclusivos del módulo (LoginForm, RegisterForm)
+│   │   │   │   ├── hooks/      # Hooks específicos (useAuth)
+│   │   │   │   ├── pages/      # Páginas/Vistas del módulo (LoginPage, RegisterPage)
+│   │   │   │   └── services/   # Peticiones API del módulo (authApi.ts)
+│   │   │   └── products/       # Módulo de Productos
+│   │   │       ├── components/ # ProductCard, ProductList
+│   │   │       ├── pages/      # ProductsPage, ProductDetailPage
+│   │   │       └── services/   # productApi.ts
+│   │   ├── routes/             # Configuración centralizada de rutas y navegación
+│   │   ├── types/              # Interfaces y tipos globales de TypeScript
+│   │   ├── utils/              # Funciones auxiliares puras (formatters, validators)
+│   │   ├── App.tsx             # Proveedores globales y layout base
+│   │   └── main.tsx            # Punto de entrada de React
+│   ├── .env.example            # Variables de entorno requeridas para el cliente
 │   └── package.json
 │
-├── server/ (o backend/)
+├── server/                     # App de Backend (Node.js / Express / Fastify)
 │   ├── src/
-│   │   ├── config/               # Env vars, DB connection, Mailer
-│   │   ├── middlewares/          # Auth middleware, error handler global
-│   │   ├── modules/              #  NÚCLEO DEL BACKEND
-│   │   │   ├── auth/
-│   │   │   │   ├── auth.controller.ts
-│   │   │   │   ├── auth.service.ts
-│   │   │   │   ├── auth.routes.ts
-│   │   │   │   └── auth.schema.ts    # Validaciones (Zod/Joi)
-│   │   │   ├── users/
-│   │   │   │   ├── user.controller.ts
-│   │   │   │   ├── user.service.ts
-│   │   │   │   ├── user.model.ts     # Prisma/Mongoose model
-│   │   │   │   └── user.routes.ts
-│   │   ├── utils/                # Helpers reutilizables
-│   │   ├── app.ts                # App de Express/Fastify
-│   │   └── server.ts             # Punto de entrada (listen)
+│   │   ├── config/             # Configuración del servidor (variables env, conexión a DB)
+│   │   ├── middlewares/        # Middlewares globales (Auth guard, Error handling, Rate limiting)
+│   │   ├── modules/            #  NÚCLEO DE DOMINIO / FEATURES (Feature-Based)
+│   │   │   ├── auth/           # Lógica del módulo de autenticación
+│   │   │   │   ├── auth.controller.ts # Manejo de Request/Response
+│   │   │   │   ├── auth.routes.ts     # Definición de endpoints
+│   │   │   │   ├── auth.schema.ts     # Validaciones de entrada (Zod / Joi)
+│   │   │   │   └── auth.service.ts    # Lógica de negocio e integración
+│   │   │   └── users/          # Lógica del módulo de usuarios
+│   │   │       ├── user.controller.ts
+│   │   │       ├── user.model.ts      # Modelo de base de datos (Prisma / Mongoose / ORM)
+│   │   │       ├── user.routes.ts
+│   │   │       └── user.service.ts
+│   │   ├── utils/              # Helpers compartidos (logger, token generator)
+│   │   ├── app.ts              # Configuración de Express/Fastify
+│   │   └── server.ts           # Inicialización y escucha del servidor
+│   ├── .env.example            # Variables de entorno requeridas para el servidor
 │   └── package.json
 │
-├── .gitignore
+├── .gitignore                  # Archivos excluidos del control de versiones
 └── README.md
